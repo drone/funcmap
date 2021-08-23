@@ -44,7 +44,38 @@ var Funcs = map[string]interface{}{
 
 // SafeFuncs is a map of custom template functions. Functions
 // that expose the environment and filesystem are excluded.
-var SafeFuncs = map[string]interface{}{}
+var SafeFuncs = map[string]interface{}{
+	"base64Decode": DecodeBase64,
+	"base64Encode": EncodeBase64,
+	"chome":        Chomp,
+	"contains":     Contains,
+	"containsAny":  ContainsAny,
+	"dateFormat":   TimeFormat,
+	"htmlEscape":   HTMLEscape,
+	"htmlUnescape": HTMLUnescape,
+	"hasPrefix":    HasPrefix,
+	"hasSuffix":    HasSuffix,
+	"jsonify":      EncodeJSON,
+	"lower":        ToLower,
+	"md5":          MD5,
+	"now":          Now,
+	"padLeft":      PadLeft,
+	"padRight":     PadRight,
+	"replace":      Replace,
+	"sha1":         SHA1,
+	"sha256":       SHA256,
+	"split":        Split,
+	"splitn":       SplitN,
+	"title":        ToTitle,
+	"time":         Time,
+	"trimLeft":     TrimLeft,
+	"trimRight":    TrimRight,
+	"trimPrefix":   TrimPrefix,
+	"trimSuffix":   TrimSuffix,
+	"trim":         Trim,
+	"upper":        ToUpper,
+	"urlize":       Urlize,
+}
 
 // after
 // apply
