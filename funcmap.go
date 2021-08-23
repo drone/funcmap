@@ -8,7 +8,7 @@ package funcmap
 var Funcs = map[string]interface{}{
 	"base64Decode": DecodeBase64,
 	"base64Encode": EncodeBase64,
-	"chome":        Chomp,
+	"chomp":        Chomp,
 	"contains":     Contains,
 	"containsAny":  ContainsAny,
 	"dateFormat":   TimeFormat,
