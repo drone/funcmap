@@ -6,23 +6,20 @@ package funcmap
 
 import (
 	"bytes"
-	"testing"
 	"text/template"
 )
 
-func TestSomething(t *testing.T) {
-	buf := new(bytes.Buffer)
-	tmpl, _ := template.New("_").Funcs(Funcs).Parse(testT)
-	err := tmpl.Execute(buf, map[string]interface{}{
-		"Num": float64(32.5),
-	})
+// helper function parses and applies the template and returns the
+// results in string format.
+func execute(text string, data map[string]interface{}) (string, error) {
+	var buf bytes.Buffer
+	t, err := template.New("_").Funcs(Funcs).Parse(text)
 	if err != nil {
-		t.Error(err)
+		return buf.String(), err
 	}
-	println(buf.String())
+	err = t.Execute(&buf, data)
+	return buf.String(), err
 }
-
-var testT = `{{ printf "hello %s %s world" (upper "foo" ) (lower .Num ) }}`
 
 // https://github.com/leekchan/gtf
 // https://github.com/Masterminds/sprig

@@ -4,16 +4,31 @@
 
 package funcmap
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 // Time converts the textual representation of the datetime
 // string into a time.Time interface.
-func Time(v interface{}) (interface{}, error) {
+func Time(v interface{}, args ...interface{}) (interface{}, error) {
 	t, err := toTimeE(v)
 	if err != nil {
 		return nil, err
 	}
 
+	if len(args) > 0 {
+		locStr, err := toStringE(args[0])
+		if err != nil {
+			return nil, err
+		}
+		loc, err := time.LoadLocation(locStr)
+		if err != nil {
+			return nil, err
+		}
+		return t.In(loc), nil
+	}
+	fmt.Println(t)
 	return t, nil
 }
 
@@ -22,6 +37,7 @@ func Time(v interface{}) (interface{}, error) {
 // the time.Time value. These are formatted with the layout
 // string
 func TimeFormat(layout string, v interface{}) (string, error) {
+	println("TIMEFORMAT")
 	t, err := toTimeE(v)
 	if err != nil {
 		return "", err
