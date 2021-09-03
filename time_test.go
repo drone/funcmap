@@ -4,9 +4,7 @@
 
 package funcmap
 
-import (
-	"testing"
-)
+import "testing"
 
 func TestTime(t *testing.T) {
 	tests := []struct {
