@@ -4,6 +4,8 @@
 
 package funcmap
 
+import "text/template"
+
 // Funcs is a map of custom template functions.
 var Funcs = map[string]interface{}{
 	"base64Decode": DecodeBase64,
@@ -75,6 +77,17 @@ var SafeFuncs = map[string]interface{}{
 	"trim":         Trim,
 	"upper":        ToUpper,
 	"urlize":       Urlize,
+}
+
+// Combine combines function maps.
+func Combine(funcmaps ...map[string]interface{}) template.FuncMap {
+	result := map[string]interface{}{}
+	for _, funcmap := range funcmaps {
+		for k, v := range funcmap {
+			result[k] = v
+		}
+	}
+	return result
 }
 
 // after
