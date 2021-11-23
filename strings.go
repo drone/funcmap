@@ -14,6 +14,19 @@ import (
 // TODO (bradrydzewski) add ReplaceRE function
 // TODO (bradrydzewski) add FindRE function
 
+// Append returns a slice of the string s, with append appended.
+func Append(s, append interface{}) (string, error) {
+	ss, err := toStringE(s)
+	if err != nil {
+		return "", err
+	}
+	as, err := toStringE(append)
+	if err != nil {
+		return "", err
+	}
+	return ss + as, nil
+}
+
 // Chomp returns a copy of s with all trailing newline
 // characters removed.
 func Chomp(s interface{}) (string, error) {
@@ -67,6 +80,40 @@ func HasSuffix(s interface{}, suffix string) (bool, error) {
 		return false, err
 	}
 	return strings.HasSuffix(ss, suffix), nil
+}
+
+// Indent returns a copy of the string s, with all lines prefixed with n spaces
+func Indent(s interface{}, n int) (string, error) {
+	ss, err := toStringE(s)
+	if err != nil {
+		return "", err
+	}
+	pad := strings.Repeat(" ", n)
+	return pad + strings.Replace(ss, "\n", "\n"+pad, -1), nil
+}
+
+// NIndent returns a copy of the string s, with all lines prefixed with n
+// spaces, and a newline at the start. This is useful when interpolating into
+// yaml, where you want each line indented by the exact same amount, but 
+func NIndent(s interface{}, n int) (string, error) {
+	indented, err := Indent(s, n)
+	if err != nil {
+		return "", err
+	}
+	return "\n" + indented, nil
+}
+
+// Prepend returns a slice of the string s, prepended with prepend.
+func Prepend(s, prepend interface{}) (string, error) {
+	ss, err := toStringE(s)
+	if err != nil {
+		return "", err
+	}
+	ps, err := toStringE(prepend)
+	if err != nil {
+		return "", err
+	}
+	return ps + ss, nil
 }
 
 // PadLeft returns a slice of the string s, prefixed with

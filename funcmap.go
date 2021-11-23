@@ -8,6 +8,7 @@ import "text/template"
 
 // Funcs is a map of custom template functions.
 var Funcs = map[string]interface{}{
+	"append":       Append,
 	"base64Decode": DecodeBase64,
 	"base64Encode": EncodeBase64,
 	"chomp":        Chomp,
@@ -20,12 +21,15 @@ var Funcs = map[string]interface{}{
 	"htmlUnescape": HTMLUnescape,
 	"hasPrefix":    HasPrefix,
 	"hasSuffix":    HasSuffix,
+	"indent":       Indent,
 	"jsonify":      EncodeJSON,
 	"lower":        ToLower,
 	"md5":          MD5,
+	"nindent":      NIndent,
 	"now":          Now,
 	"padLeft":      PadLeft,
 	"padRight":     PadRight,
+	"prepend":      Prepend,
 	"readDir":      ReadDir,
 	"readFile":     ReadFile,
 	"replace":      Replace,
@@ -47,6 +51,7 @@ var Funcs = map[string]interface{}{
 // SafeFuncs is a map of custom template functions. Functions
 // that expose the environment and filesystem are excluded.
 var SafeFuncs = map[string]interface{}{
+	"append":       Append,
 	"base64Decode": DecodeBase64,
 	"base64Encode": EncodeBase64,
 	"chomp":        Chomp,
@@ -57,12 +62,15 @@ var SafeFuncs = map[string]interface{}{
 	"htmlUnescape": HTMLUnescape,
 	"hasPrefix":    HasPrefix,
 	"hasSuffix":    HasSuffix,
+	"indent":       Indent,
 	"jsonify":      EncodeJSON,
 	"lower":        ToLower,
 	"md5":          MD5,
+	"nindent":      NIndent,
 	"now":          Now,
 	"padLeft":      PadLeft,
 	"padRight":     PadRight,
+	"prepend":      Prepend,
 	"replace":      Replace,
 	"sha1":         SHA1,
 	"sha256":       SHA256,
