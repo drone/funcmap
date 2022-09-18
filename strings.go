@@ -291,5 +291,5 @@ func toYAML(s interface{}) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return strings.TrimSuffix(string(data), "\n")
+	return strings.TrimSuffix(string(data), "\n"), nil
 }
