@@ -87,8 +87,8 @@ var SafeFuncs = map[string]interface{}{
 	"trim":         Trim,
 	"upper":        ToUpper,
 	"urlize":       Urlize,
-	"toYaml":				toYAML,
-	"fromYaml":			fromYAML,
+	"toYaml":       toYAML,
+	"fromYaml":     fromYAML,
 }
 
 // Combine combines function maps.
