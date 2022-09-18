@@ -47,7 +47,6 @@ var Funcs = map[string]interface{}{
 	"upper":        ToUpper,
 	"urlize":       Urlize,
 	"toYaml":       toYAML,
-	"fromYaml":     fromYAML,
 }
 
 // SafeFuncs is a map of custom template functions. Functions
@@ -88,7 +87,6 @@ var SafeFuncs = map[string]interface{}{
 	"upper":        ToUpper,
 	"urlize":       Urlize,
 	"toYaml":       toYAML,
-	"fromYaml":     fromYAML,
 }
 
 // Combine combines function maps.

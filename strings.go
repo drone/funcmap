@@ -286,26 +286,10 @@ func Urlize(s interface{}) (string, error) {
 // always return a string, even on marshal error (empty string).
 //
 // This is designed to be called from a template.
-func toYAML(v interface{}) string {
-	data, err := yaml.Marshal(v)
+func toYAML(s interface{}) (string, error) {
+	data, err := yaml.Marshal(s)
 	if err != nil {
-		// Swallow errors inside of a template.
-		return ""
+		return "", err
 	}
-	return TrimSuffix(string(data), "\n")
-}
-
-// fromYAML converts a YAML document into a map[string]interface{}.
-//
-// This is not a general-purpose YAML parser, and will not parse all valid
-// YAML documents. Additionally, because its intended use is within templates
-// it tolerates errors. It will insert the returned error message string into
-// m["Error"] in the returned map.
-func fromYAML(str string) map[string]interface{} {
-	m := map[string]interface{}{}
-
-	if err := yaml.Unmarshal([]byte(str), &m); err != nil {
-		m["Error"] = err.Error()
-	}
-	return m
+	return strings.TrimSuffix(string(data), "\n")
 }
