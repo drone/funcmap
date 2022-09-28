@@ -286,7 +286,7 @@ func Urlize(s interface{}) (string, error) {
 // always return a string, even on marshal error (empty string).
 //
 // This is designed to be called from a template.
-func toYAML(s interface{}) (string, error) {
+func ToYAML(s interface{}) (string, error) {
 	data, err := yaml.Marshal(s)
 	if err != nil {
 		return "", err
