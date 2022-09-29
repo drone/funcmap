@@ -129,3 +129,36 @@ func TestPrepend(t *testing.T) {
 		})
 	}
 }
+
+func TestToYAML(t *testing.T) {
+	type args struct {
+		s       interface{}
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    string
+		wantErr bool
+	}{
+		{
+			name: "toYaml string",
+			args: args{
+				s: map[string]interface{}{"foo": "bar"},
+			},
+			want:    "foo: bar",
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := ToYAML(tt.args.s)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("ToYAML() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("ToYAML() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

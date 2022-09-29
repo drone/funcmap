@@ -7,6 +7,7 @@ package funcmap
 import (
 	"net/url"
 	"strings"
+	"sigs.k8s.io/yaml"
 )
 
 // TODO (bradrydzewski) add Join function
@@ -279,4 +280,16 @@ func Urlize(s interface{}) (string, error) {
 	ss = strings.TrimSpace(ss)
 	ss = strings.Replace(ss, " ", "-", -1)
 	return url.QueryEscape(ss), nil
+}
+
+// toYAML takes an interface, marshals it to yaml, and returns a string. It will
+// always return a string, even on marshal error (empty string).
+//
+// This is designed to be called from a template.
+func ToYAML(s interface{}) (string, error) {
+	data, err := yaml.Marshal(s)
+	if err != nil {
+		return "", err
+	}
+	return strings.TrimSuffix(string(data), "\n"), nil
 }
