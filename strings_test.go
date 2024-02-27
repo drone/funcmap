@@ -1,164 +1,196 @@
 // Copyright 2018 Drone.IO Inc. All rights reserved.
 // Use of this source code is governed by the Blue Oak Model License
 // license that can be found in the LICENSE file.
+
 package funcmap
 
-import (
-	"testing"
-)
+import "testing"
 
-func TestAppend(t *testing.T) {
-	type args struct {
-		s      interface{}
-		append interface{}
-	}
+func TestStrings(t *testing.T) {
 	tests := []struct {
-		name    string
-		args    args
-		want    string
-		wantErr bool
+		data map[string]interface{}
+		text string
+		want string
 	}{
+		//
+		// append / prepend
+		//
 		{
-			name: "append string",
-			args: args{
-				s:      "foo",
-				append: "bar",
-			},
-			want:    "foobar",
-			wantErr: false,
+			data: nil,
+			text: `{{ append "hello" "world" }}`,
+			want: "helloworld",
 		},
 		{
-			name: "append number",
-			args: args{
-				s:      6,
-				append: 9,
-			},
-			want:    "69",
-			wantErr: false,
+			data: nil,
+			text: `{{ prepend "hello" "world" }}`,
+			want: "worldhello",
+		},
+		//
+		// chomp
+		//
+		{
+			data: map[string]interface{}{"input": "hello world\n"},
+			text: `{{ chomp .input }}`,
+			want: "hello world",
+		},
+		//
+		// contains
+		//
+		{
+			data: nil,
+			text: `{{ contains "foobar" "foo" }}`,
+			want: "true",
 		},
 		{
-			name: "append string",
-			args: args{
-				s:      nil,
-				append: "bar",
-			},
-			want:    "bar",
-			wantErr: false,
+			data: nil,
+			text: `{{ contains "foobar" "baz" }}`,
+			want: "false",
 		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, err := Append(tt.args.s, tt.args.append)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("Append() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if got != tt.want {
-				t.Errorf("Append() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestNIndent(t *testing.T) {
-	type args struct {
-		s interface{}
-		n int
-	}
-	tests := []struct {
-		name    string
-		args    args
-		want    string
-		wantErr bool
-	}{
+		//
+		// findRE
+		//
 		{
-			name: "indent string",
-			args: args{
-				s: "foo",
-				n: 2,
-			},
-			want:    "\n  foo",
-			wantErr: false,
+			data: nil,
+			text: `{{ findRE "foo" "foobar" }}`,
+			want: "[foo]",
 		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, err := NIndent(tt.args.s, tt.args.n)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("NIndent() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if got != tt.want {
-				t.Errorf("NIndent() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestPrepend(t *testing.T) {
-	type args struct {
-		s       interface{}
-		prepend interface{}
-	}
-	tests := []struct {
-		name    string
-		args    args
-		want    string
-		wantErr bool
-	}{
+		//
+		// hasPrefix
+		//
 		{
-			name: "prepend string",
-			args: args{
-				s:       "foo",
-				prepend: "bar",
-			},
-			want:    "barfoo",
-			wantErr: false,
+			data: nil,
+			text: `{{ hasPrefix "foobar" "foo" }}`,
+			want: "true",
 		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, err := Prepend(tt.args.s, tt.args.prepend)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("Prepend() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if got != tt.want {
-				t.Errorf("Prepend() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestToYAML(t *testing.T) {
-	type args struct {
-		s       interface{}
-	}
-	tests := []struct {
-		name    string
-		args    args
-		want    string
-		wantErr bool
-	}{
 		{
-			name: "toYaml string",
-			args: args{
-				s: map[string]interface{}{"foo": "bar"},
-			},
-			want:    "foo: bar",
-			wantErr: false,
+			data: nil,
+			text: `{{ hasPrefix "foobar" "bar" }}`,
+			want: "false",
+		},
+		//
+		// hasSuffix
+		//
+		{
+			data: nil,
+			text: `{{ hasSuffix "foobar" "bar" }}`,
+			want: "true",
+		},
+		{
+			data: nil,
+			text: `{{ hasSuffix "foobar" "foo" }}`,
+			want: "false",
+		},
+		//
+		// padLeft
+		//
+		{
+			data: nil,
+			text: `{{ padLeft "hello" " " 5 }}`,
+			want: "     hello",
+		},
+		//
+		// padRight
+		//
+		{
+			data: nil,
+			text: `{{ padRight "hello" " " 5 }}`,
+			want: "hello     ",
+		},
+		//
+		// repeat
+		//
+		{
+			data: nil,
+			text: `{{ repeat " " 5 }}`,
+			want: "     ",
+		},
+		//
+		// replace
+		//
+		{
+			data: nil,
+			text: `{{ replace "foobazbar" "baz" " " }}`,
+			want: "foo bar",
+		},
+		{
+			data: nil,
+			text: `{{ replaceRE "^https?://([^/]+).*" "$1" "https://drone.io" }}`,
+			want: "drone.io",
+		},
+		//
+		// lower / title / upper
+		//
+		{
+			data: nil,
+			text: `{{ lower "HELLO" }}`,
+			want: "hello",
+		},
+		{
+			data: nil,
+			text: `{{ title "hello" }}`,
+			want: "HELLO",
+		},
+		{
+			data: nil,
+			text: `{{ upper "hello" }}`,
+			want: "HELLO",
+		},
+		//
+		// split
+		//
+		{
+			data: nil,
+			text: `{{ split "foo,bar,baz" "," }}`,
+			want: "[foo bar baz]",
+		},
+		{
+			data: nil,
+			text: `{{ splitn "foo,bar,baz" "," 2 }}`,
+			want: "[foo bar,baz]",
+		},
+		//
+		// trim
+		//
+		{
+			data: nil,
+			text: `{{ trim " foo " }}`,
+			want: "foo",
+		},
+		{
+			data: nil,
+			text: `{{ trimLeft " foo " " " }}`,
+			want: "foo ",
+		},
+		{
+			data: nil,
+			text: `{{ trimRight " foo " " " }}`,
+			want: " foo",
+		},
+		{
+			data: nil,
+			text: `{{ trimPrefix " foo " " " }}`,
+			want: "foo ",
+		},
+		{
+			data: nil,
+			text: `{{ trimSuffix " foo " " " }}`,
+			want: " foo",
+		},
+		//
+		// urlize
+		//
+		{
+			data: nil,
+			text: `{{ urlize "foo bar baz" }}`,
+			want: "foo-bar-baz",
 		},
 	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, err := ToYAML(tt.args.s)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("ToYAML() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if got != tt.want {
-				t.Errorf("ToYAML() = %v, want %v", got, tt.want)
-			}
-		})
+	for _, test := range tests {
+		out, err := execute(test.text, test.data)
+		if err != nil {
+			t.Error(err)
+		} else if out != test.want {
+			t.Errorf("Want template result %s, got %s", test.want, out)
+		}
 	}
 }

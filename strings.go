@@ -6,14 +6,15 @@ package funcmap
 
 import (
 	"net/url"
+	"regexp"
 	"strings"
-	"sigs.k8s.io/yaml"
 )
+
+// String functions from Hugo
+// https://github.com/gohugoio/hugo/blob/7f47b99ea9a7ba7759c4f9424fedd4591e6da497/tpl/strings/strings.go
 
 // TODO (bradrydzewski) add Join function
 // TODO (bradrydzewski) add Substr function
-// TODO (bradrydzewski) add ReplaceRE function
-// TODO (bradrydzewski) add FindRE function
 
 // Append returns a slice of the string s, with append appended.
 func Append(s, append interface{}) (string, error) {
@@ -26,6 +27,19 @@ func Append(s, append interface{}) (string, error) {
 		return "", err
 	}
 	return ss + as, nil
+}
+
+// Prepend returns a slice of the string s, prepended with prepend.
+func Prepend(s, prepend interface{}) (string, error) {
+	ss, err := toStringE(s)
+	if err != nil {
+		return "", err
+	}
+	ps, err := toStringE(prepend)
+	if err != nil {
+		return "", err
+	}
+	return ps + ss, nil
 }
 
 // Chomp returns a copy of s with all trailing newline
@@ -65,61 +79,60 @@ func ContainsAny(s, chars interface{}) (bool, error) {
 	return strings.ContainsAny(ss, sc), nil
 }
 
+// FindRE returns a list of strings that match the regular expression. By default all matches
+// will be included. The number of matches can be limited with an optional third parameter.
+func FindRE(expr string, content interface{}, limit ...interface{}) ([]string, error) {
+	re, err := regexp.Compile(expr)
+	if err != nil {
+		return nil, err
+	}
+
+	conv, err := toStringE(content)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(limit) == 0 {
+		return re.FindAllString(conv, -1), nil
+	}
+
+	lim, err := toIntE(limit[0])
+	if err != nil {
+		return nil, err
+	}
+
+	return re.FindAllString(conv, lim), nil
+}
+
 // HasPrefix tests whether the string s begins with prefix.
-func HasPrefix(s interface{}, prefix string) (bool, error) {
-	ss, err := toStringE(s)
+func HasPrefix(s, prefix interface{}) (bool, error) {
+	s1, err := toStringE(s)
 	if err != nil {
 		return false, err
 	}
-	return strings.HasPrefix(ss, prefix), nil
+	s2, err := toStringE(prefix)
+	if err != nil {
+		return false, err
+	}
+	return strings.HasPrefix(s1, s2), nil
 }
 
 // HasSuffix tests whether the string s ends with suffix.
-func HasSuffix(s interface{}, suffix string) (bool, error) {
-	ss, err := toStringE(s)
+func HasSuffix(s, suffix interface{}) (bool, error) {
+	s1, err := toStringE(s)
 	if err != nil {
 		return false, err
 	}
-	return strings.HasSuffix(ss, suffix), nil
-}
-
-// Indent returns a copy of the string s, with all lines prefixed with n spaces
-func Indent(s interface{}, n int) (string, error) {
-	ss, err := toStringE(s)
+	s2, err := toStringE(suffix)
 	if err != nil {
-		return "", err
+		return false, err
 	}
-	pad := strings.Repeat(" ", n)
-	return pad + strings.Replace(ss, "\n", "\n"+pad, -1), nil
-}
-
-// NIndent returns a copy of the string s, with all lines prefixed with n
-// spaces, and a newline at the start. This is useful when interpolating into
-// yaml, where you want each line indented by the exact same amount, but 
-func NIndent(s interface{}, n int) (string, error) {
-	indented, err := Indent(s, n)
-	if err != nil {
-		return "", err
-	}
-	return "\n" + indented, nil
-}
-
-// Prepend returns a slice of the string s, prepended with prepend.
-func Prepend(s, prepend interface{}) (string, error) {
-	ss, err := toStringE(s)
-	if err != nil {
-		return "", err
-	}
-	ps, err := toStringE(prepend)
-	if err != nil {
-		return "", err
-	}
-	return ps + ss, nil
+	return strings.HasSuffix(s1, s2), nil
 }
 
 // PadLeft returns a slice of the string s, prefixed with
 // n copies of padding.
-func PadLeft(s, padding interface{}, n int) (string, error) {
+func PadLeft(s, padding, n interface{}) (string, error) {
 	ss, err := toStringE(s)
 	if err != nil {
 		return "", err
@@ -128,7 +141,11 @@ func PadLeft(s, padding interface{}, n int) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	for i := 0; i < n; i++ {
+	sn, err := toIntE(n)
+	if err != nil {
+		return "", err
+	}
+	for i := 0; i < sn; i++ {
 		ss = sp + ss
 	}
 	return ss, err
@@ -136,7 +153,7 @@ func PadLeft(s, padding interface{}, n int) (string, error) {
 
 // PadRight returns a slice of the string s, suffixed with
 // n instances of the padding string.
-func PadRight(s, padding interface{}, n int) (string, error) {
+func PadRight(s, padding, n interface{}) (string, error) {
 	ss, err := toStringE(s)
 	if err != nil {
 		return "", err
@@ -145,10 +162,28 @@ func PadRight(s, padding interface{}, n int) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	for i := 0; i < n; i++ {
+	sn, err := toIntE(n)
+	if err != nil {
+		return "", err
+	}
+	for i := 0; i < sn; i++ {
 		ss = ss + sp
 	}
 	return ss, err
+}
+
+// Repeat returns a new string consisting of count copies
+// of the string s.
+func Repeat(s, count interface{}) (string, error) {
+	ss, err := toStringE(s)
+	if err != nil {
+		return "", err
+	}
+	sn, err := toIntE(count)
+	if err != nil {
+		return "", err
+	}
+	return strings.Repeat(ss, sn), nil
 }
 
 // Replace returns a copy of the string s with instances of
@@ -169,6 +204,32 @@ func Replace(s, old, new interface{}) (string, error) {
 	return strings.Replace(ss, so, no, -1), nil
 }
 
+// ReplaceRE returns a copy of s, replacing all matches of the regular
+// expression pattern with the replacement text repl.
+func ReplaceRE(pattern, repl, s interface{}) (string, error) {
+	sp, err := toStringE(pattern)
+	if err != nil {
+		return "", err
+	}
+
+	sr, err := toStringE(repl)
+	if err != nil {
+		return "", err
+	}
+
+	ss, err := toStringE(s)
+	if err != nil {
+		return "", err
+	}
+
+	re, err := regexp.Compile(sp)
+	if err != nil {
+		return "", err
+	}
+
+	return re.ReplaceAllString(ss, sr), nil
+}
+
 // Split slices s into all substrings separated by sep and
 // returns a slice of the substrings between those separators.
 func Split(s interface{}, sep string) ([]string, error) {
@@ -181,12 +242,20 @@ func Split(s interface{}, sep string) ([]string, error) {
 
 // SplitN slices s into substrings separated by sep and returns
 // a slice of the substrings between those separators.
-func SplitN(s interface{}, sep string, n int) ([]string, error) {
-	ss, err := toStringE(s)
+func SplitN(s, sep, n interface{}) ([]string, error) {
+	s1, err := toStringE(s)
 	if err != nil {
 		return nil, err
 	}
-	return strings.SplitN(ss, sep, n), nil
+	s2, err := toStringE(sep)
+	if err != nil {
+		return nil, err
+	}
+	no, err := toIntE(n)
+	if err != nil {
+		return nil, err
+	}
+	return strings.SplitN(s1, s2, no), nil
 }
 
 // ToLower returns a copy of the input s with all Unicode letters
@@ -221,42 +290,58 @@ func ToUpper(s interface{}) (string, error) {
 
 // TrimLeft returns a slice of the string s with all leading Unicode
 // code points contained in cutset removed.
-func TrimLeft(s interface{}, custet string) (string, error) {
-	ss, err := toStringE(s)
+func TrimLeft(s, cutset interface{}) (string, error) {
+	s1, err := toStringE(s)
 	if err != nil {
 		return "", err
 	}
-	return strings.TrimLeft(ss, custet), nil
+	s2, err := toStringE(cutset)
+	if err != nil {
+		return "", err
+	}
+	return strings.TrimLeft(s1, s2), nil
 }
 
 // TrimRight returns a slice of the string s, with all trailing
 // Unicode code points contained in cutset removed.
-func TrimRight(s interface{}, custet string) (string, error) {
-	ss, err := toStringE(s)
+func TrimRight(s, cutset interface{}) (string, error) {
+	s1, err := toStringE(s)
 	if err != nil {
 		return "", err
 	}
-	return strings.TrimRight(ss, custet), nil
+	s2, err := toStringE(cutset)
+	if err != nil {
+		return "", err
+	}
+	return strings.TrimRight(s1, s2), nil
 }
 
 // TrimPrefix returns a slice of the string s, with all trailing
 // Unicode code points contained in cutset removed.
-func TrimPrefix(s interface{}, prefix string) (string, error) {
-	ss, err := toStringE(s)
+func TrimPrefix(s, prefix interface{}) (string, error) {
+	s1, err := toStringE(s)
 	if err != nil {
 		return "", err
 	}
-	return strings.TrimPrefix(ss, prefix), nil
+	s2, err := toStringE(prefix)
+	if err != nil {
+		return "", err
+	}
+	return strings.TrimPrefix(s1, s2), nil
 }
 
 // TrimSuffix returns s without the provided trailing suffix
 // string. If s doesn't end with suffix, s is returned unchanged.
-func TrimSuffix(s interface{}, suffix string) (string, error) {
-	ss, err := toStringE(s)
+func TrimSuffix(s, suffix interface{}) (string, error) {
+	s1, err := toStringE(s)
 	if err != nil {
 		return "", err
 	}
-	return strings.TrimSuffix(ss, suffix), nil
+	s2, err := toStringE(suffix)
+	if err != nil {
+		return "", err
+	}
+	return strings.TrimSuffix(s1, s2), nil
 }
 
 // Trim returns a slice of the string s, with all leading
@@ -280,16 +365,4 @@ func Urlize(s interface{}) (string, error) {
 	ss = strings.TrimSpace(ss)
 	ss = strings.Replace(ss, " ", "-", -1)
 	return url.QueryEscape(ss), nil
-}
-
-// toYAML takes an interface, marshals it to yaml, and returns a string. It will
-// always return a string, even on marshal error (empty string).
-//
-// This is designed to be called from a template.
-func ToYAML(s interface{}) (string, error) {
-	data, err := yaml.Marshal(s)
-	if err != nil {
-		return "", err
-	}
-	return strings.TrimSuffix(string(data), "\n"), nil
 }
