@@ -55,8 +55,6 @@ t, err := template.New("_").Funcs(funcmap.Funcs).Parse(text)
 * [`containsAny`](https://gohugo.io/functions/strings/containsany/)
 * [`findRE`](https://gohugo.io/functions/strings/findre/)
 * [`firstUpper`](https://gohugo.io/functions/strings/firstupper/)
-* `htmlEscape`
-* `htmlUnescape`
 * [`hasPrefix`](https://gohugo.io/functions/strings/hasprefix/)
 * [`hasSuffix`](https://gohugo.io/functions/strings/hassuffix/)
 * [`lower`](https://gohugo.io/functions/strings/tolower/)
@@ -76,6 +74,11 @@ t, err := template.New("_").Funcs(funcmap.Funcs).Parse(text)
 * [`trimPrefix`](https://gohugo.io/functions/strings/trimprefix/)
 * [`trimSuffix`](https://gohugo.io/functions/strings/trimsuffix/)
 * [`upper`](https://gohugo.io/functions/strings/toupper/)
+
+### Transform Functions
+
+* [`htmlEscape`](https://gohugo.io/functions/transform/htmlescape/)
+* [`htmlUnescape`](https://gohugo.io/functions/transform/htmlunescape/)
 
 ### URL Functions
 
