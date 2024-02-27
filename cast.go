@@ -4,6 +4,7 @@
 package funcmap
 
 import (
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"reflect"
@@ -113,6 +114,57 @@ func toStringE(i interface{}) (string, error) {
 	}
 }
 
+func toIntE(i interface{}) (int, error) {
+	i = indirect(i)
+
+	intv, ok := toInt(i)
+	if ok {
+		return intv, nil
+	}
+
+	switch s := i.(type) {
+	case int64:
+		return int(s), nil
+	case int32:
+		return int(s), nil
+	case int16:
+		return int(s), nil
+	case int8:
+		return int(s), nil
+	case uint:
+		return int(s), nil
+	case uint64:
+		return int(s), nil
+	case uint32:
+		return int(s), nil
+	case uint16:
+		return int(s), nil
+	case uint8:
+		return int(s), nil
+	case float64:
+		return int(s), nil
+	case float32:
+		return int(s), nil
+	case string:
+		v, err := strconv.ParseInt(trimZeroDecimal(s), 0, 0)
+		if err == nil {
+			return int(v), nil
+		}
+		return 0, fmt.Errorf("unable to cast %#v of type %T to int64", i, i)
+	case json.Number:
+		return toIntE(string(s))
+	case bool:
+		if s {
+			return 1, nil
+		}
+		return 0, nil
+	case nil:
+		return 0, nil
+	default:
+		return 0, fmt.Errorf("unable to cast %#v of type %T to int", i, i)
+	}
+}
+
 func toTimeE(i interface{}) (tim time.Time, err error) {
 	i = indirect(i)
 
@@ -172,4 +224,37 @@ func parseDateWith(s string, dates []string) (d time.Time, e error) {
 		}
 	}
 	return d, fmt.Errorf("unable to parse date: %s", s)
+}
+
+// toInt returns the int value of v if v or v's underlying type
+// is an int.
+// Note that this will return false for int64 etc. types.
+func toInt(v interface{}) (int, bool) {
+	switch v := v.(type) {
+	case int:
+		return v, true
+	case time.Weekday:
+		return int(v), true
+	case time.Month:
+		return int(v), true
+	default:
+		return 0, false
+	}
+}
+
+func trimZeroDecimal(s string) string {
+	var foundZero bool
+	for i := len(s); i > 0; i-- {
+		switch s[i-1] {
+		case '.':
+			if foundZero {
+				return s[:i-1]
+			}
+		case '0':
+			foundZero = true
+		default:
+			return s
+		}
+	}
+	return s
 }
