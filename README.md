@@ -1,11 +1,25 @@
 This package aims to provide an independent implementation of the Hugo template functions.
 https://gohugo.io/functions/
 
-__Available Functions:__
+# Usage
+
+Import the package:
+
+```
+import "github.com/drone/funcmap"
+```
+
+Provide the Funcmap when compiling your templates:
+
+```
+t, err := template.New("_").Funcs(funcmap.Funcs).Parse(text)
+```
+
+# Functions
 
 * `append`
-* `base64Decode* `
-* `base64Encode* `
+* `base64Decode`
+* `base64Encode`
 * `chomp`
 * `contains`
 * `containsAny`
@@ -46,17 +60,3 @@ __Available Functions:__
 * `urlize`
 * `yamlEncode`
 * `yamlDecode`
-
-__Usage:__
-
-Import the package:
-
-```
-import "github.com/drone/funcmap"
-```
-
-Provide the Funcmap when compiling your templates:
-
-```
-t, err := template.New("_").Funcs(funcmap.Funcs).Parse(text)
-```
