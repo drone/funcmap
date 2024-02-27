@@ -1,5 +1,5 @@
 This package aims to provide an independent implementation of the Hugo template functions.
-https://gohugo.io/functions/
+https://gohugo.io/functions/ ([view source](https://github.com/gohugoio/hugo/tree/7f47b99ea9a7ba7759c4f9424fedd4591e6da497/tpl))
 
 # Usage
 
@@ -40,6 +40,7 @@ t, err := template.New("_").Funcs(funcmap.Funcs).Parse(text)
 * `padLeft`
 * `padRight`
 * `prepend`
+* `firstUpper`
 * `readDir`
 * `readFile`
 * `replace`

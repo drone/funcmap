@@ -47,6 +47,14 @@ func TestStrings(t *testing.T) {
 			want: "false",
 		},
 		//
+		// firstUpper
+		//
+		{
+			data: nil,
+			text: `{{ firstUpper "foo" }}`,
+			want: "Foo",
+		},
+		//
 		// findRE
 		//
 		{

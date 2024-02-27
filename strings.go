@@ -8,6 +8,8 @@ import (
 	"net/url"
 	"regexp"
 	"strings"
+	"unicode"
+	"unicode/utf8"
 )
 
 // String functions from Hugo
@@ -102,6 +104,16 @@ func FindRE(expr string, content interface{}, limit ...interface{}) ([]string, e
 	}
 
 	return re.FindAllString(conv, lim), nil
+}
+
+// FirstUpper returns a string with the first character as upper case.
+func FirstUpper(s interface{}) (string, error) {
+	ss, err := toStringE(s)
+	if err != nil {
+		return "", err
+	}
+
+	return firstUpper(ss), nil
 }
 
 // HasPrefix tests whether the string s begins with prefix.
@@ -365,4 +377,16 @@ func Urlize(s interface{}) (string, error) {
 	ss = strings.TrimSpace(ss)
 	ss = strings.Replace(ss, " ", "-", -1)
 	return url.QueryEscape(ss), nil
+}
+
+//
+// helpers
+//
+
+func firstUpper(s string) string {
+	if s == "" {
+		return ""
+	}
+	r, n := utf8.DecodeRuneInString(s)
+	return string(unicode.ToUpper(r)) + s[n:]
 }

@@ -18,6 +18,7 @@ var Funcs = map[string]interface{}{
 	"env":          Getenv,
 	"findRE":       FindRE,
 	"fileExists":   FileExists,
+	"firstUpper":   FirstUpper,
 	"htmlEscape":   HTMLEscape,
 	"htmlUnescape": HTMLUnescape,
 	"hasPrefix":    HasPrefix,
@@ -64,6 +65,7 @@ var SafeFuncs = map[string]interface{}{
 	"containsAny":  ContainsAny,
 	"dateFormat":   TimeFormat,
 	"findRE":       FindRE,
+	"firstUpper":   FirstUpper,
 	"htmlEscape":   HTMLEscape,
 	"htmlUnescape": HTMLUnescape,
 	"hasPrefix":    HasPrefix,
@@ -115,7 +117,6 @@ func Combine(funcmaps ...map[string]interface{}) template.FuncMap {
 // delimit
 // dict
 // echoParam
-// findRE
 // first
 // float
 // in
@@ -126,7 +127,6 @@ func Combine(funcmaps ...map[string]interface{}) template.FuncMap {
 // pluralize
 // querify
 // range
-// replaceRE
 // seq
 // shuffle
 // slice
