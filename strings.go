@@ -5,6 +5,7 @@
 package funcmap
 
 import (
+	"errors"
 	"net/url"
 	"regexp"
 	"strings"
@@ -240,6 +241,52 @@ func ReplaceRE(pattern, repl, s interface{}) (string, error) {
 	}
 
 	return re.ReplaceAllString(ss, sr), nil
+}
+
+// SliceString slices a string by specifying a half-open range with
+// two indices, start and end. 1 and 4 creates a slice including elements 1 through 3.
+// The end index can be omitted, it defaults to the string's length.
+func SliceString(a interface{}, startEnd ...interface{}) (string, error) {
+	aStr, err := toStringE(a)
+	if err != nil {
+		return "", err
+	}
+
+	var argStart, argEnd int
+
+	argNum := len(startEnd)
+
+	if argNum > 0 {
+		if argStart, err = toIntE(startEnd[0]); err != nil {
+			return "", errors.New("start argument must be integer")
+		}
+	}
+	if argNum > 1 {
+		if argEnd, err = toIntE(startEnd[1]); err != nil {
+			return "", errors.New("end argument must be integer")
+		}
+	}
+
+	if argNum > 2 {
+		return "", errors.New("too many arguments")
+	}
+
+	asRunes := []rune(aStr)
+
+	if argNum > 0 && (argStart < 0 || argStart >= len(asRunes)) {
+		return "", errors.New("slice bounds out of range")
+	}
+
+	if argNum == 2 {
+		if argEnd < 0 || argEnd > len(asRunes) {
+			return "", errors.New("slice bounds out of range")
+		}
+		return string(asRunes[argStart:argEnd]), nil
+	} else if argNum == 1 {
+		return string(asRunes[argStart:]), nil
+	} else {
+		return string(asRunes[:]), nil
+	}
 }
 
 // Split slices s into all substrings separated by sep and

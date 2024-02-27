@@ -48,6 +48,7 @@ t, err := template.New("_").Funcs(funcmap.Funcs).Parse(text)
 * `repeat`
 * `sha1`
 * `sha256`
+* `slicestr`
 * `split`
 * `splitn`
 * `title`
@@ -61,3 +62,32 @@ t, err := template.New("_").Funcs(funcmap.Funcs).Parse(text)
 * `urlize`
 * `yamlEncode`
 * `yamlDecode`
+
+Todo:
+
+* `after`
+* `apply`
+* `cond`
+* `default`
+* `delimit`
+* `dict`
+* `echoParam`
+* `first`
+* `float`
+* `in`
+* `int`
+* `intersect`
+* `isset`
+* `last`
+* `pluralize`
+* `querify`
+* `range`
+* `seq`
+* `shuffle`
+* `slice`
+* `sort`
+* `string`
+* `substr`
+* `union`
+* `uniq`
+* `where`

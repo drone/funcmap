@@ -144,6 +144,19 @@ func TestStrings(t *testing.T) {
 			want: "HELLO",
 		},
 		//
+		// slicestr
+		//
+		{
+			data: nil,
+			text: `{{ slicestr "BatMan" 3 }}`,
+			want: "Man",
+		},
+		{
+			data: nil,
+			text: `{{ slicestr "BatMan" 0 3 }}`,
+			want: "Bat",
+		},
+		//
 		// split
 		//
 		{

@@ -39,6 +39,7 @@ var Funcs = map[string]interface{}{
 	"repeat":       Repeat,
 	"sha1":         SHA1,
 	"sha256":       SHA256,
+	"slicestr":     SliceString,
 	"split":        Split,
 	"splitn":       SplitN,
 	"title":        ToTitle,
@@ -84,6 +85,7 @@ var SafeFuncs = map[string]interface{}{
 	"replaceRE":    ReplaceRE,
 	"sha1":         SHA1,
 	"sha256":       SHA256,
+	"slicestr":     SliceString,
 	"split":        Split,
 	"splitn":       SplitN,
 	"title":        ToTitle,
@@ -130,7 +132,6 @@ func Combine(funcmaps ...map[string]interface{}) template.FuncMap {
 // seq
 // shuffle
 // slice
-// slicestr
 // sort
 // string
 // substr
