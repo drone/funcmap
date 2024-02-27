@@ -19,7 +19,7 @@ t, err := template.New("_").Funcs(funcmap.Funcs).Parse(text)
 
 ### Crypto Functions
 
-* [`md5`](https://gohugo.io/functions/crypto/md5/))
+* [`md5`](https://gohugo.io/functions/crypto/md5/)
 * [`sha1`](https://gohugo.io/functions/crypto/sha1/)
 * [`sha256`](https://gohugo.io/functions/crypto/sha256/)
 
