@@ -16,6 +16,7 @@ var Funcs = map[string]interface{}{
 	"containsAny":  ContainsAny,
 	"dateFormat":   TimeFormat,
 	"env":          Getenv,
+	"getenv":       Getenv,
 	"findRE":       FindRE,
 	"fileExists":   FileExists,
 	"firstUpper":   FirstUpper,
