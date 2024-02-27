@@ -45,6 +45,7 @@ t, err := template.New("_").Funcs(funcmap.Funcs).Parse(text)
 * [`getenv`](https://gohugo.io/functions/os/getenv/)
 * [`readDir`](https://gohugo.io/functions/os/readdir/)
 * [`readFile`](https://gohugo.io/functions/os/readfile/)
+* [`stat`](https://gohugo.io/functions/os/stat/)
 
 ### String Functions
 

@@ -5,6 +5,7 @@
 package funcmap
 
 import (
+	"errors"
 	"io/ioutil"
 	"os"
 )
@@ -47,4 +48,23 @@ func FileExists(name interface{}) (bool, error) {
 	}
 	_, err = os.Stat(sn)
 	return err == nil, nil
+}
+
+// Stat returns the os.FileInfo structure describing file.
+func Stat(i interface{}) (os.FileInfo, error) {
+	path, err := toStringE(i)
+	if err != nil {
+		return nil, err
+	}
+
+	if path == "" {
+		return nil, errors.New("fileStat needs a path to a file")
+	}
+
+	r, err := os.Stat(path)
+	if err != nil {
+		return nil, err
+	}
+
+	return r, nil
 }

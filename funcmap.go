@@ -43,6 +43,7 @@ var Funcs = map[string]interface{}{
 	"slicestr":     SliceString,
 	"split":        Split,
 	"splitn":       SplitN,
+	"stat":         Stat,
 	"title":        ToTitle,
 	"time":         Time,
 	"trimLeft":     TrimLeft,
